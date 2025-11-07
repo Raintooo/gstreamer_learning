@@ -161,6 +161,13 @@ pipeline = gst_pipeline_new ("test-pipeline");
 
 ![link](./image/element-link.png)
 
+
+```C
+g_object_set (source, "pattern", 0, NULL);
+```
+设置视频源模式，是`videotestsrc`下的子属性，这个参数具体可以取什么值，可以用`gst-inspect-1.0`查看，这里0是指输出三色条纹视频
+
+
 ```C
 ret = gst_element_set_state (pipeline, GST_STATE_PLAYING);
 ```
