@@ -3,6 +3,7 @@
   - [pad](#pad)
   - [例子](#例子)
     - [分析](#分析)
+  - [gstreamer的状态](#gstreamer的状态)
 
 
 # 动态pipeline
@@ -295,3 +296,22 @@ pad_added_handler (GstElement * src, GstPad * new_pad, CustomData * data)
     goto exit;
   }
 ```
+这里是想获取新的pad 是否是我们需要的，如果不是就跳过，因为在这里例子里面我们只需要audio相关的pad, 同时这里也涉及几个知识点：
+* `pad`的capabilities：`GstCaps`
+* `GstStructure`: 保存媒体相关信息的结构体
+
+
+## gstreamer的状态
+
+我们知道
+```gst_element_set_state (data.pipeline, GST_STATE_PLAYING);```
+是用来设置播放状态的，那么还有一些其他的状态吗？答案是肯定的
+
+| 状态        | 描述       |
+| :--------- | :--------   |
+|     NULL   |  默认状态         |
+|   READY    |  当前element已经准备可以到下一个状态PAUSED|
+|   PAUSED   |  该元素处于暂停状态，已准备好接收并处理数据。然而，接收端元素仅接受一个缓冲区，然后就会阻塞。|
+|   PLAYING  |  处于播放状态|
+
+**你只能在相邻的状态切换，例如只能从READY -> PAUSED, 不能从NULL -> PAUSED**
